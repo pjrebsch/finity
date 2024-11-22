@@ -1,3 +1,2 @@
-[install.lockfile]
-save = true
-print = "yarn"
+[install]
+saveTextLockfile = true

@@ -1,0 +1,36 @@
+{
+  "name": "@ghostry/finity-reactjs",
+  "version": "0.0.1",
+  "license": "MIT",
+  "type": "module",
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js"
+    }
+  },
+  "scripts": {
+    "build:reset": "rm -rf ./dist",
+    "build:compile": "tsc -b ./tsconfig.types.json ./tsconfig.esm.json ./tsconfig.cjs.json",
+    "build:clean": "find ./dist -type f -name '*.tsbuildinfo' -delete",
+    "build": "bun run build:reset && bun run build:compile && bun run build:clean"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@ghostry/finity-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=16.8"
+  },
+  "devDependencies": {
+    "@types/react": "*",
+    "typescript": "^5.6.3"
+  }
+}

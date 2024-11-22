@@ -1,29 +1,14 @@
 {
-  "name": "@stormhash/finity",
-  "version": "0.0.1",
+  "name": "@ghostry/finity",
+  "private": "true",
   "license": "MIT",
   "type": "module",
-  "types": "./dist/types/index.d.ts",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js",
-      "default": "./dist/esm/index.js"
-    }
-  },
-  "scripts": {
-    "build:reset": "rm -rf ./dist",
-    "build:clean": "find ./dist -type f -name '*.tsbuildinfo' -delete",
-    "build:compile": "tsc -b ./tsconfig.types.json ./tsconfig.esm.json ./tsconfig.cjs.json",
-    "build": "bun run build:reset && bun run build:compile && bun run build:clean"
-  },
-  "files": [
-    "dist"
+  "workspaces": [
+    "pkg/*"
   ],
   "devDependencies": {
-    "typescript": "^5.6.3"
-  }
+    "@changesets/cli": "^2.27.10",
+    "turbo": "^2.3.3"
+  },
+  "packageManager": "bun@1.1.42"
 }
