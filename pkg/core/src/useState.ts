@@ -7,6 +7,8 @@ export interface UseState<T> {
   reset(): T;
 }
 
+export type UseStateHook = <T>(initial: InitialValue<T>) => UseState<T>;
+
 export default (config: Config) => {
   return <T>(initial: InitialValue<T>): UseState<T> => {
     const initialValue = (): Exclude<T, Function> =>

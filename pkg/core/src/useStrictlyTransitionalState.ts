@@ -1,5 +1,5 @@
+import type { DefinedTransitionalState } from './defineTransitionalState';
 import type {
-  DefinedFiniteTransitionalState,
   FiniteStateUnion,
   StateDefinition,
   TransitionsDefinition,
@@ -10,10 +10,11 @@ import {
   type UseTransitionalState,
 } from './useTransitionalState';
 
-export type StrictlyTransitionalState<T> =
-  T extends DefinedFiniteTransitionalState<infer K, infer S, infer X>
-    ? UseStrictlyTransitionalState<K, S, X>
-    : never;
+export type UsingStrictlyTransitionalState<
+  T extends DefinedTransitionalState<any, any, any>,
+> = T extends DefinedTransitionalState<infer K, infer S, infer X>
+  ? UseStrictlyTransitionalState<K, S, X>
+  : never;
 
 export interface UseStrictlyTransitionalState<
   K extends string,
@@ -22,7 +23,7 @@ export interface UseStrictlyTransitionalState<
 > extends Omit<UseTransitionalState<K, S, X>, 'set' | 'update' | 'reset'> {}
 
 export default (
-  config: Config,
+  _config: Config,
   useTransitionalState: ReturnType<typeof _useTransitionalState>,
 ) => {
   return <
@@ -30,7 +31,7 @@ export default (
     S extends StateDefinition<K>,
     X extends TransitionsDefinition<K>,
   >(
-    State: DefinedFiniteTransitionalState<K, S, X>,
+    State: DefinedTransitionalState<K, S, X>,
     initial: NoInfer<Getter<FiniteStateUnion<K, S>>>,
   ): UseStrictlyTransitionalState<K, S, X> => {
     const { set, update, reset, ...state } = useTransitionalState(
@@ -38,6 +39,6 @@ export default (
       initial,
     );
 
-    return { ...state } as unknown as UseStrictlyTransitionalState<K, S, X>;
+    return { ...state };
   };
 };

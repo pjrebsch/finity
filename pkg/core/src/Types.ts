@@ -1,3 +1,7 @@
+export interface UnhandledStates<_Unhandled> {
+  _: never;
+}
+
 export type Getter<T> = {
   (): T;
 };
