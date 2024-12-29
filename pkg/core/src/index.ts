@@ -13,6 +13,7 @@ import _useStrictlyTransitionalState from './useStrictlyTransitionalState';
 import _useTransitionalState from './useTransitionalState';
 
 export * from './ExhaustiveSwitch';
+export * from './Utils';
 
 export type * from './defineTransitionalState';
 export type * from './States';
