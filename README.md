@@ -79,9 +79,9 @@ function Message(props: {
 
 There are 3 official variants of this package available on https://npmjs.com
 
-For React and Solid applications, install `@ghostry/finity-reactjs` or `@ghostry/finity-solidjs` directly. These are intended to work out-of-the-box for those frameworks using their built-in reactivity features.
+For React and Solid applications, install [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs) or [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs) directly. These are intended to work out-of-the-box for those frameworks using their built-in reactivity features.
 
-For other frameworks, you can implement a custom integration using `@ghostry/finity-core`.
+For other frameworks, you can implement a custom integration using [`@ghostry/finity-core`](https://www.npmjs.com/package/@ghostry/finity-core).
 
 ## Guide
 
@@ -173,6 +173,8 @@ The `useTransitionalState` hook exposes the `transition` function on each state,
 
 The `useRender` function can be replaced with a native `switch` statement for the majority of users.
 
-However, if you are using SolidJS or some other framework where the `JSX.Element` type includes `undefined`, then a `switch` statement will not guarantee exhaustiveness, as any unhandled state will result in returning `undefined`, which TypeScript will accept as a valid render value.
+However, if you are using SolidJS or some other framework where the `JSX.Element` type includes `undefined`, then a `switch` statement will not guarantee exhaustiveness, as any unhandled state will result in implicitly returning `undefined`, which TypeScript will accept as a valid render value.
 
 If that applies to your application, then you will need to use `useRender` or some other approach for ensuring case exhaustivity.
+
+Note: the `useRender` function is not available in the `@ghostry/finity-core` package because it's implementation is entirely subject to a frontend framework.

@@ -1,7 +1,26 @@
 {
   "name": "@ghostry/finity-core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
+  "description": "Finite state management with exhaustiveness and transition enforcement for TypeScript.",
+  "keywords": [
+    "finite state",
+    "state management",
+    "TypeScript",
+    "exhaustive",
+    "switch",
+    "transition"
+  ],
+  "author": {
+    "name": "Patrick Rebsch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pjrebsch/finity",
+    "directory": "pkg/core"
+  },
+  "homepage": "https://github.com/pjrebsch/finity",
+  "bugs": "https://github.com/pjrebsch/finity/issues",
   "type": "module",
   "types": "./dist/types/index.d.ts",
   "main": "./dist/cjs/index.js",
@@ -18,12 +37,14 @@
     "build:reset": "rm -rf ./dist",
     "build:compile": "tsc -b ./tsconfig.types.json ./tsconfig.esm.json ./tsconfig.cjs.json",
     "build:clean": "find ./dist -type f -name '*.tsbuildinfo' -delete",
-    "build": "bun run build:reset && bun run build:compile && bun run build:clean"
+    "build": "bun run build:reset && bun run build:compile && bun run build:clean",
+    "prepack": "cp ../../README.md ./",
+    "postpack": "rm ./README.md"
   },
   "files": [
     "dist"
   ],
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.2"
   }
 }
