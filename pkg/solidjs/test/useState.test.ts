@@ -1,0 +1,112 @@
+import { renderHook } from '@solidjs/testing-library';
+import { describe, expect, test } from 'vitest';
+import { testEffectInStages } from '.';
+import { initialize } from '../src';
+
+export const { useState } = initialize({});
+
+test('setting the state', async () => {
+  const { result: state } = renderHook(useState, {
+    initialProps: [0],
+  });
+
+  await testEffectInStages((done) => [
+    () => {
+      expect(state.value()).toEqual(0);
+      state.set(1);
+    },
+    () => {
+      expect(state.value()).toEqual(1);
+      done();
+    },
+  ]);
+});
+
+test('updating the state', async () => {
+  const { result: state } = renderHook(useState, {
+    initialProps: [0],
+  });
+
+  await testEffectInStages((done) => [
+    () => {
+      expect(state.value()).toEqual(0);
+      state.update((prev) => prev + 1);
+    },
+    () => {
+      expect(state.value()).toEqual(1);
+      done();
+    },
+  ]);
+});
+
+describe('initial value deferred with a function', () => {
+  test('setting the state', async () => {
+    const { result: state } = renderHook(useState, {
+      initialProps: [() => 0],
+    });
+
+    await testEffectInStages((done) => [
+      () => {
+        expect(state.value()).toBe(0);
+        state.set(1);
+      },
+      () => {
+        expect(state.value()).toEqual(1);
+        done();
+      },
+    ]);
+  });
+
+  test('updating the state', async () => {
+    const { result: state } = renderHook(useState, {
+      initialProps: [() => 0],
+    });
+
+    await testEffectInStages((done) => [
+      () => {
+        expect(state.value()).toBe(0);
+        state.update((prev) => prev + 1);
+      },
+      () => {
+        expect(state.value()).toEqual(1);
+        done();
+      },
+    ]);
+  });
+});
+
+describe('a function as the state value', () => {
+  test('setting the state', async () => {
+    const { result: state } = renderHook(useState, {
+      initialProps: [(): (() => number) => () => 0],
+    });
+
+    await testEffectInStages((done) => [
+      () => {
+        expect(state.value()()).toBe(0);
+        state.set(() => 1);
+      },
+      () => {
+        expect(state.value()()).toEqual(1);
+        done();
+      },
+    ]);
+  });
+
+  test('updating the state', async () => {
+    const { result: state } = renderHook(useState, {
+      initialProps: [(): (() => number) => () => 0],
+    });
+
+    await testEffectInStages((done) => [
+      () => {
+        expect(state.value()()).toBe(0);
+        state.update((prev) => () => prev() + 1);
+      },
+      () => {
+        expect(state.value()()).toEqual(1);
+        done();
+      },
+    ]);
+  });
+});

@@ -3,7 +3,7 @@ import {
   type ExhaustiveSwitch,
   type Getter,
 } from '@ghostry/finity-core';
-import { useEffect } from 'react';
+import * as React from 'react';
 import type { Config } from './Types';
 
 type EffectSwitch<
@@ -15,7 +15,7 @@ class EffectSwitchInstance<
   S extends { kind: string },
 > extends ExhaustiveSwitchInstance<void, S> {
   public use = (): void => {
-    useEffect(() => {
+    React.useEffect(() => {
       const s = this.state();
       const found = this.cases.find(([kinds, _]) => kinds.includes(s.kind));
       if (found) {

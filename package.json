@@ -25,7 +25,13 @@
     "pkg/*"
   ],
   "devDependencies": {
-    "turbo": "^2.3.3"
+    "turbo": "^2.4.4"
   },
-  "packageManager": "bun@1.1.42"
+  "scripts": {
+    "build:reset": "turbo run build:reset",
+    "build": "turbo run build",
+    "outdated": "turbo run outdated",
+    "test": "turbo run test"
+  },
+  "packageManager": "bun@1.2.7"
 }

@@ -4,6 +4,18 @@
   "compilerOptions": {
     "rootDir": "./src",
     "jsx": "preserve",
-    "jsxImportSource": "solid-js"
+    "jsxImportSource": "solid-js",
+    "paths": {
+      /**
+       * By default, the server build of SolidJS is used when importing `solid-js` which
+       * means that reactivity features aren't available.
+       *
+       * To work around this, we need to import the client build of SolidJS explicitly
+       * by its `dist` path.
+       *
+       * @see https://github.com/solidjs/solid/discussions/425#discussioncomment-686291
+       */
+      "$/solid-js": ["${configDir}/../../node_modules/solid-js/dist/solid.js"]
+    }
   }
 }

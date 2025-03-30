@@ -33,13 +33,18 @@
       "default": "./dist/esm/index.js"
     }
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build:reset": "rm -rf ./dist",
     "build:compile": "tsc -b ./tsconfig.types.json ./tsconfig.esm.json ./tsconfig.cjs.json",
     "build:clean": "find ./dist -type f -name '*.tsbuildinfo' -delete",
     "build": "bun run build:reset && bun run build:compile && bun run build:clean",
     "prepack": "cp ../../README.md ./",
-    "postpack": "rm ./README.md"
+    "postpack": "rm -f ./README.md",
+    "outdated": "bun outdated",
+    "test": "vitest run"
   },
   "files": [
     "dist"
@@ -51,7 +56,16 @@
     "react": ">=16.8"
   },
   "devDependencies": {
-    "@types/react": "*",
-    "typescript": "^5.7.2"
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.2.0",
+    "@types/bun": "^1.2.8",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^26.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.1.1"
   }
 }
