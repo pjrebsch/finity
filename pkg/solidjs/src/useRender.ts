@@ -1,9 +1,9 @@
-import { type JSX } from '$/solid-js';
 import {
   ExhaustiveSwitchInstance,
   type ExhaustiveSwitch,
   type Getter,
 } from '@ghostry/finity-core';
+import { type JSX } from 'solid-js';
 import { Render } from './Render';
 import type { Config } from './Types';
 

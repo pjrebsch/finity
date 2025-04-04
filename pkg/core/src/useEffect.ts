@@ -1,9 +1,8 @@
-import type { Getter } from '@ghostry/finity-core';
 import {
   ExhaustiveSwitchInstance,
   type ExhaustiveSwitch,
 } from './ExhaustiveSwitch';
-import type { Config } from './Types';
+import type { Config, Getter } from './Types';
 
 export type EffectSwitch<
   S extends { kind: string },
