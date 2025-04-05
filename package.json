@@ -26,13 +26,14 @@
   ],
   "devDependencies": {
     "@rslib/core": "^0.6.1",
-    "turbo": "^2.5.0"
+    "turbo": "^2.5.0",
+    "typescript": "^5.8.3"
   },
   "scripts": {
     "build:reset": "turbo run build:reset",
     "build": "turbo run build",
-    "outdated": "turbo run outdated",
+    "outdated": "bun outdated && turbo run outdated",
     "test": "turbo run test"
   },
-  "packageManager": "bun@1.2.7"
+  "packageManager": "bun@1.2.8"
 }

@@ -47,8 +47,5 @@
   },
   "files": [
     "dist"
-  ],
-  "devDependencies": {
-    "typescript": "^5.7.2"
-  }
+  ]
 }
