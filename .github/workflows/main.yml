@@ -18,8 +18,7 @@ jobs:
   test:
     name: Test
     uses: ./.github/workflows/test.yml
-    needs:
-      - build
+    needs: [build]
     permissions:
       actions: read
     with:
@@ -69,7 +68,7 @@ jobs:
     name: Publish
     if: ${{ needs.check-release.outputs.exists == 'false' }}
     uses: ./.github/workflows/publish.yml
-    needs: [build, get-version, check-release]
+    needs: [build, test, get-version, check-release]
     permissions:
       actions: read
       attestations: write

@@ -35,7 +35,7 @@
     "build": "turbo run build",
     "outdated": "bun outdated && turbo run outdated",
     "test": "turbo run test",
-    "version": "bunx @jsdevtools/version-bump-prompt package.json pkg/**/package.json"
+    "version": "bunx @jsdevtools/version-bump-prompt package.json pkg/**/package.json bun.lock"
   },
   "packageManager": "bun@1.2.8"
 }
