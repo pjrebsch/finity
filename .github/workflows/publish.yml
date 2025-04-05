@@ -1,0 +1,167 @@
+name: Publish Packages
+
+on:
+  workflow_call:
+    secrets:
+      NPM_AUTH_TOKEN:
+        required: true
+        description: The NPM authentication token to publish packages.
+    inputs:
+      version:
+        required: true
+        type: string
+        description: The version of the package to publish.
+      build-run-id:
+        required: true
+        type: string
+        description: The run ID of the build workflow that generated the artifacts to publish.
+
+env:
+  is-prerelease: ${{ contains(inputs.version, '-') }}
+
+jobs:
+  pack:
+    name: Pack `pkg/${{ matrix.pkg }}`
+    permissions:
+      actions: read
+      attestations: write
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        pkg:
+          - core
+          - solidjs
+          - reactjs
+    env:
+      filename: ${{ matrix.pkg }}-${{ inputs.version }}.tgz
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Download `pkg/${{ matrix.pkg }}` build
+        uses: actions/download-artifact@v4
+        with:
+          name: pkg-${{ matrix.pkg }}
+          path: pkg/${{ matrix.pkg }}/dist
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.build-run-id }}
+          repository: ${{ github.repository }}
+
+      - name: Construct tarball path
+        id: tarball-path
+        run: >
+          echo "path=${{ github.workspace }}/pkg/${{ matrix.pkg }}/${{ env.filename }}"
+          >> $GITHUB_OUTPUT
+
+      - name: Pack `pkg/${{ matrix.pkg }}`
+        working-directory: pkg/${{ matrix.pkg }}
+        run: bun pm pack --filename ${{ steps.tarball-path.outputs.path }}
+
+      - name: Upload `pkg/${{ matrix.pkg }}`
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.filename }}
+          path: ${{ steps.tarball-path.outputs.path }}
+          if-no-files-found: error
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: ${{ steps.tarball-path.outputs.path }}
+
+  release-github:
+    name: Create release on GitHub
+    needs: [pack]
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download `pkg/core`
+        uses: actions/download-artifact@v4
+        with:
+          name: core-${{ inputs.version }}.tgz
+          path: ${{ github.workspace }}/dist
+          merge-multiple: true
+
+      - name: Download `pkg/reactjs`
+        uses: actions/download-artifact@v4
+        with:
+          name: reactjs-${{ inputs.version }}.tgz
+          path: ${{ github.workspace }}/dist
+          merge-multiple: true
+
+      - name: Download `pkg/solidjs`
+        uses: actions/download-artifact@v4
+        with:
+          name: solidjs-${{ inputs.version }}.tgz
+          path: ${{ github.workspace }}/dist
+          merge-multiple: true
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ inputs.version }}
+          tag_name: ${{ inputs.version }}
+          target_commitish: ${{ github.ref }}
+          prerelease: ${{ env.is-prerelease }}
+          fail_on_unmatched_files: true
+          files: ${{ github.workspace }}/dist/*.tgz
+
+  ##
+  # https://docs.npmjs.com/generating-provenance-statements#example-github-actions-workflow
+  #
+  publish-npm:
+    name: Publish `pkg/${{ matrix.pkg }}` to NPM
+    needs: [pack]
+    strategy:
+      fail-fast: false
+      matrix:
+        pkg:
+          - core
+          - solidjs
+          - reactjs
+    env:
+      filename: ${{ matrix.pkg }}-${{ inputs.version }}.tgz
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Download `pkg/${{ matrix.pkg }}`
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.filename }}
+          path: ${{ github.workspace }}/dist
+          merge-multiple: true
+
+      ##
+      # Until Bun supports publishing with provenance, npm with Node is required.
+      # https://github.com/oven-sh/bun/issues/15601
+      #
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with: { node-version: 20, registry-url: https://registry.npmjs.org }
+      - name: Publish `pkg/${{ matrix.pkg }}`
+        run: >
+          bunx npm@11.2.0 publish
+          ${{ github.workspace }}/dist/${{ env.filename }}
+          --tag ${{ env.is-prerelease == 'true' && 'experimental' || 'latest' }}
+          --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

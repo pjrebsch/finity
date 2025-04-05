@@ -1,6 +1,7 @@
 {
   "name": "@ghostry/finity",
   "private": "true",
+  "version": "0.0.3-experimental.8",
   "license": "MIT",
   "description": "Finite state management with exhaustiveness and transition enforcement for TypeScript.",
   "keywords": [
@@ -16,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pjrebsch/finity"
+    "url": "git+https://github.com/pjrebsch/finity"
   },
   "homepage": "https://github.com/pjrebsch/finity",
   "bugs": "https://github.com/pjrebsch/finity/issues",
@@ -33,7 +34,8 @@
     "build:reset": "turbo run build:reset",
     "build": "turbo run build",
     "outdated": "bun outdated && turbo run outdated",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "version": "bunx @jsdevtools/version-bump-prompt package.json pkg/**/package.json bun.lock"
   },
   "packageManager": "bun@1.2.8"
 }

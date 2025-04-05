@@ -1,0 +1,74 @@
+name: Build Packages
+
+on:
+  workflow_call:
+    outputs:
+      run-id:
+        value: ${{ github.run_id }}
+
+jobs:
+  build-pkg-core:
+    name: Build `pkg/core`
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build `pkg/core`
+        working-directory: pkg/core
+        run: bun run build
+
+      - name: Upload `pkg/core`
+        uses: actions/upload-artifact@v4
+        with:
+          name: pkg-core
+          path: pkg/core/dist
+          if-no-files-found: error
+
+  build-pkg:
+    needs:
+      - build-pkg-core
+    strategy:
+      fail-fast: false
+      matrix:
+        pkg:
+          - solidjs
+          - reactjs
+    name: Build `pkg/${{ matrix.pkg }}`
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Download `pkg/core` build
+        uses: actions/download-artifact@v4
+        with:
+          name: pkg-core
+          path: pkg/core/dist
+
+      - name: Build `pkg/${{ matrix.pkg }}`
+        working-directory: pkg/${{ matrix.pkg }}
+        run: bun run build
+
+      - name: Upload `pkg/${{ matrix.pkg }}`
+        uses: actions/upload-artifact@v4
+        with:
+          name: pkg-${{ matrix.pkg }}
+          path: pkg/${{ matrix.pkg }}/dist
+          if-no-files-found: error

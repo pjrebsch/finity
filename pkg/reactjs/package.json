@@ -1,6 +1,6 @@
 {
   "name": "@ghostry/finity-reactjs",
-  "version": "0.0.2",
+  "version": "0.0.3-experimental.8",
   "license": "MIT",
   "description": "Finite state management with exhaustiveness and transition enforcement for TypeScript.",
   "keywords": [
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/pjrebsch/finity",
+    "url": "git+https://github.com/pjrebsch/finity",
     "directory": "pkg/reactjs"
   },
   "homepage": "https://github.com/pjrebsch/finity",
@@ -34,7 +34,8 @@
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
     "build:reset": "rm -rf ./dist",
