@@ -1,5 +1,7 @@
-import { createEffect } from '$/solid-js';
 import { testEffect } from '@solidjs/testing-library';
+import { createEffect } from 'solid-js';
+
+export { initialize } from '@ghostry/finity-solidjs';
 
 export const testEffectInStages = async (
   toStages: (done: () => void) => (() => void)[],

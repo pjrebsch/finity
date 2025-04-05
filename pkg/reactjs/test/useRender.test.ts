@@ -1,4 +1,4 @@
-import { render, renderHook } from '@solidjs/testing-library';
+import { renderHook } from '@testing-library/react';
 import { expect, test } from 'vitest';
 import { initialize } from '.';
 
@@ -17,16 +17,16 @@ const State = finity
   });
 
 test('rendering based on the state', async () => {
-  const { result: state } = renderHook(finity.useTransitionalState, {
-    initialProps: [State, () => ({ kind: 'Loading' } as const)],
-  });
+  const { result } = renderHook(() =>
+    finity.useTransitionalState(State, () => ({ kind: 'Loading' } as const)),
+  );
 
-  const { asFragment } = render(() =>
+  const { result: fragment } = renderHook(() =>
     finity
-      .useRender(state.value)
+      .useRender(result.current.value)
       .case(['Loading', 'Ready', 'Errored'], (s) => s.kind)
       .use(),
   );
 
-  expect(asFragment()).toBe('Loading');
+  expect(fragment.current).toBe('Loading');
 });

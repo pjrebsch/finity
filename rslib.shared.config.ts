@@ -6,6 +6,7 @@ export default defineConfig({
       format: 'esm',
       syntax: 'es5',
       bundle: false,
+      autoExtension: false,
       dts: {
         distPath: './dist/types',
       },
@@ -19,6 +20,7 @@ export default defineConfig({
       format: 'cjs',
       syntax: 'es5',
       bundle: false,
+      autoExtension: false,
       output: {
         distPath: {
           root: './dist/cjs',
@@ -29,6 +31,7 @@ export default defineConfig({
       format: 'umd',
       syntax: 'es5',
       bundle: true,
+      autoExtension: false,
       output: {
         distPath: {
           root: './dist/umd',
@@ -40,14 +43,20 @@ export default defineConfig({
     tsconfigPath: './tsconfig.json',
   },
   output: {
+    target: 'web',
+    minify: {
+      jsOptions: {
+        minimizerOptions: {
+          minify: true,
+          compress: true,
+          mangle: true,
+        },
+      },
+    },
     distPath: {
       root: './dist',
     },
     cleanDistPath: true,
-    target: 'web',
-    externals: {
-      '$/solid-js': 'solid-js',
-    },
     sourceMap: true,
   },
 });

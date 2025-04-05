@@ -1,11 +1,11 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
-import { initialize } from '../src';
+import { initialize } from '.';
 
-export const { useState } = initialize({});
+const finity = initialize({});
 
 test('setting the state', async () => {
-  const { result, rerender } = renderHook(() => useState(0));
+  const { result, rerender } = renderHook(() => finity.useState(0));
 
   expect(result.current.value()).toBe(0);
 
@@ -16,7 +16,7 @@ test('setting the state', async () => {
 });
 
 test('updating the state', async () => {
-  const { result, rerender } = renderHook(() => useState(0));
+  const { result, rerender } = renderHook(() => finity.useState(0));
 
   expect(result.current.value()).toBe(0);
 
@@ -28,7 +28,7 @@ test('updating the state', async () => {
 
 describe('initial value deferred with a function', () => {
   test('setting the state', async () => {
-    const { result, rerender } = renderHook(() => useState(() => 0));
+    const { result, rerender } = renderHook(() => finity.useState(() => 0));
 
     expect(result.current.value()).toBe(0);
 
@@ -39,7 +39,7 @@ describe('initial value deferred with a function', () => {
   });
 
   test('updating the state', async () => {
-    const { result, rerender } = renderHook(() => useState(() => 0));
+    const { result, rerender } = renderHook(() => finity.useState(() => 0));
 
     expect(result.current.value()).toBe(0);
 
@@ -53,7 +53,7 @@ describe('initial value deferred with a function', () => {
 describe('a function as the state value', () => {
   test('setting the state', async () => {
     const { result, rerender } = renderHook(() =>
-      useState((): (() => number) => () => 0),
+      finity.useState((): (() => number) => () => 0),
     );
 
     expect(result.current.value()()).toBe(0);
@@ -66,7 +66,7 @@ describe('a function as the state value', () => {
 
   test('updating the state', async () => {
     const { result, rerender } = renderHook(() =>
-      useState((): (() => number) => () => 0),
+      finity.useState((): (() => number) => () => 0),
     );
 
     expect(result.current.value()()).toBe(0);

@@ -3,6 +3,11 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/tsconfig.json",
+        "$TURBO_ROOT$/rslib.shared.config.ts"
+      ],
       "outputs": ["dist/**"]
     },
     "build:reset": {
@@ -12,7 +17,8 @@
       "cache": false
     },
     "test": {
-      "dependsOn": ["build"]
+      "dependsOn": ["build"],
+      "cache": false
     }
   }
 }

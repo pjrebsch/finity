@@ -1,6 +1,6 @@
-import { createSignal } from '$/solid-js';
 import type { Initialized as _Initialized } from '@ghostry/finity-core';
 import * as Core from '@ghostry/finity-core';
+import { createSignal } from 'solid-js';
 import type { Config } from './Types';
 import _useEffect from './useEffect';
 import _useRender from './useRender';

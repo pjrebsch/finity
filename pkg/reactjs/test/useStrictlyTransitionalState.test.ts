@@ -1,29 +1,24 @@
 import { renderHook } from '@testing-library/react';
 import { expect, test } from 'vitest';
-import { initialize } from '../src';
+import { initialize } from '.';
 
-export const {
-  defineTransitionalState,
-  useTransitionalState,
-  useStrictlyTransitionalState,
-  useState,
-  useEffect,
-  useRender,
-} = initialize({});
+const finity = initialize({});
 
-const State = defineTransitionalState<{
-  Loading: {};
-  Ready: { resource: number };
-  Errored: { error: Error };
-}>('MyState').transitions({
-  Loading: ['Ready', 'Errored'],
-  Ready: [],
-  Errored: [],
-});
+const State = finity
+  .defineTransitionalState<{
+    Loading: {};
+    Ready: { resource: number };
+    Errored: { error: Error };
+  }>('MyState')
+  .transitions({
+    Loading: ['Ready', 'Errored'],
+    Ready: [],
+    Errored: [],
+  });
 
 test('transitioning the state', async () => {
   const { result, rerender } = renderHook(() =>
-    useTransitionalState(State, () => ({ kind: 'Loading' } as const)),
+    finity.useTransitionalState(State, () => ({ kind: 'Loading' } as const)),
   );
 
   const s1 = result.current.value();

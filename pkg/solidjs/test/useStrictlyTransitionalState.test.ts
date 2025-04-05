@@ -1,29 +1,23 @@
 import { renderHook } from '@solidjs/testing-library';
 import { expect, test } from 'vitest';
-import { testEffectInStages } from '.';
-import { initialize } from '../src';
+import { initialize, testEffectInStages } from '.';
 
-export const {
-  defineTransitionalState,
-  useTransitionalState,
-  useStrictlyTransitionalState,
-  useState,
-  useEffect,
-  useRender,
-} = initialize({});
+const finity = initialize({});
 
-const State = defineTransitionalState<{
-  Loading: {};
-  Ready: { resource: number };
-  Errored: { error: Error };
-}>('MyState').transitions({
-  Loading: ['Ready', 'Errored'],
-  Ready: [],
-  Errored: [],
-});
+const State = finity
+  .defineTransitionalState<{
+    Loading: {};
+    Ready: { resource: number };
+    Errored: { error: Error };
+  }>('MyState')
+  .transitions({
+    Loading: ['Ready', 'Errored'],
+    Ready: [],
+    Errored: [],
+  });
 
 test('transitioning the state', async () => {
-  const { result: state } = renderHook(useTransitionalState, {
+  const { result: state } = renderHook(finity.useTransitionalState, {
     initialProps: [State, () => ({ kind: 'Loading' } as const)],
   });
 

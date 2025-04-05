@@ -1,12 +1,11 @@
 import { renderHook } from '@solidjs/testing-library';
 import { describe, expect, test } from 'vitest';
-import { testEffectInStages } from '.';
-import { initialize } from '../src';
+import { initialize, testEffectInStages } from '.';
 
-export const { useState } = initialize({});
+const finity = initialize({});
 
 test('setting the state', async () => {
-  const { result: state } = renderHook(useState, {
+  const { result: state } = renderHook(finity.useState, {
     initialProps: [0],
   });
 
@@ -23,7 +22,7 @@ test('setting the state', async () => {
 });
 
 test('updating the state', async () => {
-  const { result: state } = renderHook(useState, {
+  const { result: state } = renderHook(finity.useState, {
     initialProps: [0],
   });
 
@@ -41,7 +40,7 @@ test('updating the state', async () => {
 
 describe('initial value deferred with a function', () => {
   test('setting the state', async () => {
-    const { result: state } = renderHook(useState, {
+    const { result: state } = renderHook(finity.useState, {
       initialProps: [() => 0],
     });
 
@@ -58,7 +57,7 @@ describe('initial value deferred with a function', () => {
   });
 
   test('updating the state', async () => {
-    const { result: state } = renderHook(useState, {
+    const { result: state } = renderHook(finity.useState, {
       initialProps: [() => 0],
     });
 
@@ -77,7 +76,7 @@ describe('initial value deferred with a function', () => {
 
 describe('a function as the state value', () => {
   test('setting the state', async () => {
-    const { result: state } = renderHook(useState, {
+    const { result: state } = renderHook(finity.useState, {
       initialProps: [(): (() => number) => () => 0],
     });
 
@@ -94,7 +93,7 @@ describe('a function as the state value', () => {
   });
 
   test('updating the state', async () => {
-    const { result: state } = renderHook(useState, {
+    const { result: state } = renderHook(finity.useState, {
       initialProps: [(): (() => number) => () => 0],
     });
 

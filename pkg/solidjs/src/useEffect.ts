@@ -1,9 +1,9 @@
-import { createEffect } from '$/solid-js';
 import {
   ExhaustiveSwitchInstance,
   type ExhaustiveSwitch,
   type Getter,
 } from '@ghostry/finity-core';
+import { createEffect } from 'solid-js';
 import type { Config } from './Types';
 
 type EffectSwitch<
