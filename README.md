@@ -77,7 +77,7 @@ function Message(props: {
 
 ## Installation
 
-There are 3 official variants of this package available on https://npmjs.com
+There are 3 official variants of this package available from https://npmjs.com
 
 For React and Solid applications, install [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs) or [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs) directly. These are intended to work out-of-the-box for those frameworks using their built-in reactivity features.
 

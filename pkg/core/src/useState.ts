@@ -2,9 +2,8 @@ import type { Config, InitialValue } from './Types';
 
 export interface UseState<T> {
   value(): T;
-  set(value: Exclude<T, Function>): T;
-  update(fn: (prev: T) => Exclude<T, Function>): T;
-  reset(): T;
+  set(value: T): T;
+  update(fn: (prev: T) => T): T;
 }
 
 export type UseStateHook = <T>(initial: InitialValue<T>) => UseState<T>;
@@ -18,17 +17,14 @@ export default (config: Config) => {
 
     const [value, setValue] = config.useState<T>(initialValue);
 
-    const set = (value: Exclude<T, Function>): T => setValue(value);
+    const set = (value: T): T => setValue((_prev) => value);
 
-    const update = (fn: (prev: T) => Exclude<T, Function>): T => setValue(fn);
-
-    const reset = () => set(initialValue());
+    const update = (fn: (prev: T) => T): T => setValue((prev) => fn(prev));
 
     return {
       value,
       set,
       update,
-      reset,
     } as const;
   };
 };

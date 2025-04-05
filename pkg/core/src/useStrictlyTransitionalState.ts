@@ -20,7 +20,7 @@ export interface UseStrictlyTransitionalState<
   K extends string,
   S extends StateDefinition<K>,
   X extends Record<K, NoInfer<K>[]>,
-> extends Omit<UseTransitionalState<K, S, X>, 'set' | 'update' | 'reset'> {}
+> extends Omit<UseTransitionalState<K, S, X>, 'set' | 'update'> {}
 
 export default (
   _config: Config,
@@ -34,10 +34,7 @@ export default (
     State: DefinedTransitionalState<K, S, X>,
     initial: NoInfer<Getter<FiniteStateUnion<K, S>>>,
   ): UseStrictlyTransitionalState<K, S, X> => {
-    const { set, update, reset, ...state } = useTransitionalState(
-      State,
-      initial,
-    );
+    const { set, update, ...state } = useTransitionalState(State, initial);
 
     return { ...state };
   };

@@ -3,20 +3,20 @@ import {
   type ExhaustiveSwitch,
   type Getter,
 } from '@ghostry/finity-core';
-import { useMemo, type JSX } from 'react';
+import * as React from 'react';
 import type { Config } from './Types';
 
 type RenderSwitch<
   S extends { kind: string },
   C extends S['kind'],
-> = ExhaustiveSwitch<JSX.Element, S, C>;
+> = ExhaustiveSwitch<React.ReactNode, S, C>;
 
 class RenderSwitchInstance<
   S extends { kind: string },
-> extends ExhaustiveSwitchInstance<JSX.Element, S> {
-  public use = (): JSX.Element => {
+> extends ExhaustiveSwitchInstance<React.ReactNode, S> {
+  public use = (): React.ReactNode => {
     const s = this.state();
-    const found = useMemo(
+    const found = React.useMemo(
       () => this.cases.find(([kinds, _]) => kinds.includes(s.kind)),
       [s],
     );
