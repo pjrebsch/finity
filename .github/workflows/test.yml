@@ -102,6 +102,12 @@ jobs:
           name: pkg-core
           path: pkg/core/dist
 
+      - name: Download `pkg/${{ matrix.pkg }}` build
+        uses: actions/download-artifact@v4
+        with:
+          name: pkg-${{ matrix.pkg }}
+          path: pkg/${{ matrix.pkg }}/dist
+
       - name: Test `pkg/${{ matrix.pkg }}`
         working-directory: pkg/${{ matrix.pkg }}
         run: bun run test
