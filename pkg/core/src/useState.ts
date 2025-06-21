@@ -1,15 +1,17 @@
 import type { Config, InitialValue } from './Types';
 
-export interface UseState<T> {
+export interface UseState<T extends {}> {
   value(): T;
   set(value: T): T;
   update(fn: (prev: T) => T): T;
 }
 
-export type UseStateHook = <T>(initial: InitialValue<T>) => UseState<T>;
+export type UseStateHook = <T extends {}>(
+  initial: InitialValue<T>,
+) => UseState<T>;
 
 export default (config: Config) => {
-  return <T>(initial: InitialValue<T>): UseState<T> => {
+  return <T extends {}>(initial: InitialValue<T>): UseState<T> => {
     const initialValue = (): Exclude<T, Function> =>
       initial instanceof Function
         ? (initial() as Exclude<T, Function>)

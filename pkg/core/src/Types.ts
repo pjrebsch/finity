@@ -2,19 +2,19 @@ export interface UnhandledStates<_Unhandled> {
   _: never;
 }
 
-export type Getter<T> = {
+export type Getter<T extends {}> = {
   (): T;
 };
 
-export type Setter<T> = {
+export type Setter<T extends {}> = {
   <U extends T>(value: (prev: T) => U): U;
   <U extends T>(value: Exclude<U, Function>): U;
 };
 
-export type InitialValue<T> = Exclude<T, Function> | Getter<T>;
+export type InitialValue<T extends {}> = Exclude<T, Function> | Getter<T>;
 
 export interface Config {
-  useState: <T>(initial: () => T) => [Getter<T>, Setter<T>];
+  useState: <T extends {}>(initial: () => T) => [Getter<T>, Setter<T>];
 }
 
 export type Prettify<T> = {

@@ -12,7 +12,7 @@ export interface Initialized extends Core.Initialized {
 
 export const initialize = (config: Config): Initialized => {
   const api = Core.initialize({
-    useState: <T>(initial: () => T) => {
+    useState: <T extends {}>(initial: () => T) => {
       const [value, set] = React.useState(initial);
 
       const getter: Core.Getter<T> = () => value;

@@ -12,7 +12,7 @@ export interface Initialized extends Core.Initialized {
 
 export const initialize = (config: Config): Initialized => {
   const api = Core.initialize({
-    useState: <T>(initial: () => T) => createSignal(initial()),
+    useState: <T extends {}>(initial: () => T) => createSignal(initial()),
   });
 
   const useEffect = $useEffect(config);
