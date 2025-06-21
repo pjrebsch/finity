@@ -4,7 +4,7 @@ export default defineConfig({
   lib: [
     {
       format: 'esm',
-      syntax: 'es5',
+      syntax: 'es6',
       bundle: false,
       autoExtension: false,
       dts: {
@@ -18,7 +18,7 @@ export default defineConfig({
     },
     {
       format: 'cjs',
-      syntax: 'es5',
+      syntax: 'es6',
       bundle: false,
       autoExtension: false,
       output: {
@@ -29,7 +29,7 @@ export default defineConfig({
     },
     {
       format: 'umd',
-      syntax: 'es5',
+      syntax: 'es6',
       bundle: true,
       autoExtension: false,
       output: {
