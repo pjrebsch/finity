@@ -3,14 +3,14 @@ import {
   type DefinedTransitionalState,
 } from './defineTransitionalState';
 import type {
-  TransitionalStateByKind as _TransitionalStateByKind,
-  TransitionalStateUnion as _TransitionalStateUnion,
+  TransitionalStateByKind as $TransitionalStateByKind,
+  TransitionalStateUnion as $TransitionalStateUnion,
 } from './States';
 import type { Config, Prettify } from './Types';
-import _useEffect from './useEffect';
-import _useState from './useState';
-import _useStrictlyTransitionalState from './useStrictlyTransitionalState';
-import _useTransitionalState from './useTransitionalState';
+import $useEffect from './useEffect';
+import $useState from './useState';
+import $useStrictlyTransitionalState from './useStrictlyTransitionalState';
+import $useTransitionalState from './useTransitionalState';
 
 export * from './ExhaustiveSwitch';
 export * from './Utils';
@@ -25,33 +25,33 @@ export type * from './useTransitionalState';
 export type TransitionalState<
   T extends DefinedTransitionalState<any, any, any>,
 > = T extends DefinedTransitionalState<infer K, infer S, infer X>
-  ? Prettify<_TransitionalStateUnion<K, S, X>>
+  ? Prettify<$TransitionalStateUnion<K, S, X>>
   : never;
 
 export type TransitionalStates<
   T extends DefinedTransitionalState<any, any, any>,
 > = T extends DefinedTransitionalState<infer K, infer S, infer X>
-  ? Prettify<_TransitionalStateByKind<K, S, X>>
+  ? Prettify<$TransitionalStateByKind<K, S, X>>
   : never;
 
 export interface Initialized {
   defineTransitionalState: typeof defineTransitionalState;
-  useState: ReturnType<typeof _useState>;
-  useTransitionalState: ReturnType<typeof _useTransitionalState>;
+  useState: ReturnType<typeof $useState>;
+  useTransitionalState: ReturnType<typeof $useTransitionalState>;
   useStrictlyTransitionalState: ReturnType<
-    typeof _useStrictlyTransitionalState
+    typeof $useStrictlyTransitionalState
   >;
-  useEffect: ReturnType<typeof _useEffect>;
+  useEffect: ReturnType<typeof $useEffect>;
 }
 
 export const initialize = (config: Config): Initialized => {
-  const useState = _useState(config);
-  const useTransitionalState = _useTransitionalState(config, useState);
-  const useStrictlyTransitionalState = _useStrictlyTransitionalState(
+  const useState = $useState(config);
+  const useTransitionalState = $useTransitionalState(config, useState);
+  const useStrictlyTransitionalState = $useStrictlyTransitionalState(
     config,
     useTransitionalState,
   );
-  const useEffect = _useEffect(config);
+  const useEffect = $useEffect(config);
 
   return {
     defineTransitionalState,
