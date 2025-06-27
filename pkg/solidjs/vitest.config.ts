@@ -8,4 +8,7 @@ export default defineConfig({
       hot: false,
     }),
   ],
+  test: {
+    reporters: ['verbose'],
+  },
 });

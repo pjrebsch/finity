@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { expect, test } from 'vitest';
+import { describe, expect, it, test } from 'vitest';
 import { initialize } from '.';
 
 const finity = initialize({});
@@ -31,4 +31,64 @@ test('transitioning the state', async () => {
 
   const { transition: _t2, ...s2 } = result.current.value();
   expect(s2).toEqual({ kind: 'Ready', resource: 123 });
+});
+
+describe('transitioning to an invalid state', () => {
+  it('does not transition', () => {
+    const { result, rerender } = renderHook(() =>
+      finity.useTransitionalState(State, () => ({
+        kind: 'Ready',
+        resource: 1,
+      })),
+    );
+
+    const s1 = result.current.value();
+    expect(s1.kind).toEqual('Ready');
+
+    if (s1.kind !== 'Ready') return;
+    s1.transition(
+      /* @ts-expect-error */
+      { kind: 'Errored', error: new Error('e') },
+    );
+
+    rerender();
+
+    const { transition: _t2, ...s2 } = result.current.value();
+    expect(s2).toEqual({ kind: 'Ready', resource: 1 });
+  });
+
+  describe('with `onInvalidTransition` configured', () => {
+    it('receives the current state and attempted transition state', () => {
+      let $from: unknown, $to: unknown;
+
+      const finity = initialize({
+        onInvalidTransition: ({ from, to }) => {
+          $from = from;
+          $to = to;
+        },
+      });
+
+      const State = finity
+        .defineTransitionalState<{
+          A: {};
+          B: {};
+        }>()
+        .transitions({
+          A: ['B'],
+          B: [],
+        });
+
+      const { result } = renderHook(() =>
+        finity.useTransitionalState(State, () => ({ kind: 'B' })),
+      );
+
+      result.current.value().transition(
+        /* @ts-expect-error */
+        { kind: 'A' },
+      );
+
+      expect($from).toMatchObject({ kind: 'B' });
+      expect($to).toMatchObject({ kind: 'A' });
+    });
+  });
 });

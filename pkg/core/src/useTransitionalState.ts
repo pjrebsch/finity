@@ -31,7 +31,7 @@ export interface UseTransitionalState<
   value(): TransitionalStateUnion<K, S, X>;
 }
 
-export default (_config: Config, useState: UseStateHook) => {
+export default (config: Config, useState: UseStateHook) => {
   return <
     K extends string,
     S extends StateDefinition<K>,
@@ -55,10 +55,7 @@ export default (_config: Config, useState: UseStateHook) => {
           if (State.transitions[currentKind].includes(futureKind)) {
             state.set(to);
           } else {
-            /**
-             * The types should never allow this to occur.
-             */
-            throw new Error('[finity] Invalid state transition!');
+            config.onInvalidTransition?.({ from: state.value(), to });
           }
         },
       } as unknown as ReturnType<Value>);

@@ -161,6 +161,59 @@ This expression is not callable.
   Type 'UnhandledStates<"Errored">' has no call signatures.
 ```
 
+## Configuration
+
+Library initialization takes a configuration object with these optional properties.
+
+### `onInvalidTransition`
+
+While the types prevent transition functions from being called with invalid states, race conditions in the consuming application's code make it possible for transitions to be called for a state after that state has already transitioned. This represents a bug in the consuming application's code and this config makes it possible to report those occurrences.
+
+_An invalid transition will only be detected in this way if whatever the current state is does not allow transition to the next state (this will be improved with [#7](https://github.com/pjrebsch/finity/issues/7))._
+
+The configured function receives an object with the current state at the time of transition (`from`) and the state to which transition was attempted (`to`).
+
+```ts
+const finity = initialize({
+  onInvalidTransition: ({ from, to }) => {
+    console.warn(
+      `Invalid state transition from "${from.kind}" to "${to.kind}"`,
+    );
+  },
+});
+```
+
+Here's a demonstration of how an invalid transition could be triggered:
+
+```ts
+finity
+  .defineTransitionalState<{
+    /* ... */
+  }>()
+  .transitions({
+    A: ['B', 'C'],
+    B: [],
+    C: [],
+  });
+```
+
+```ts
+finity.useEffect(state.value).case(['A'], ({ transition }) => {
+  /**
+   * Valid transition from A -> B
+   */
+  transition({ kind: 'B' });
+
+  /**
+   * Valid transition from A -> C according to the types, but the state
+   * will have already transitioned to B which doesn't allow transition to
+   * C, so this an invalid transition at runtime which will invoke the
+   * `onInvalidTransition` configured function
+   */
+  setTimeout(() => transition({ kind: 'C' }), 1000);
+});
+```
+
 ## FAQ
 
 ### Should I use `useStrictlyTransitionalState` or `useTransitionalState`?
