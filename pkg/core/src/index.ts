@@ -1,26 +1,26 @@
 import {
   defineTransitionalState,
   type DefinedTransitionalState,
-} from './defineTransitionalState';
+} from './defineTransitionalState.ts';
 import type {
   TransitionalStateByKind as $TransitionalStateByKind,
   TransitionalStateUnion as $TransitionalStateUnion,
-} from './States';
-import type { Config, Prettify } from './Types';
-import $useEffect from './useEffect';
-import $useState from './useState';
-import $useStrictlyTransitionalState from './useStrictlyTransitionalState';
-import $useTransitionalState from './useTransitionalState';
+} from './States.ts';
+import type { Config, Prettify } from './Types.ts';
+import $useEffect from './useEffect.ts';
+import $useState from './useState.ts';
+import $useStrictlyTransitionalState from './useStrictlyTransitionalState.ts';
+import $useTransitionalState from './useTransitionalState.ts';
 
-export * from './ExhaustiveSwitch';
-export * from './Utils';
+export * from './ExhaustiveSwitch.ts';
+export * from './Utils.ts';
 
-export type * from './defineTransitionalState';
-export type * from './States';
-export type * from './Types';
-export type * from './useState';
-export type * from './useStrictlyTransitionalState';
-export type * from './useTransitionalState';
+export type * from './defineTransitionalState.ts';
+export type * from './States.ts';
+export type * from './Types.ts';
+export type * from './useState.ts';
+export type * from './useStrictlyTransitionalState.ts';
+export type * from './useTransitionalState.ts';
 
 export type TransitionalState<
   T extends DefinedTransitionalState<any, any, any>,

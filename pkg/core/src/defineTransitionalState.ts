@@ -20,7 +20,7 @@ export const defineTransitionalState = <
   S extends StateDefinition<string> = never,
 >(
   name?: string,
-) => {
+): DefinedFiniteState<Extract<keyof S, string>, S> => {
   type K = Extract<keyof S, string>;
 
   const defined: DefinedFiniteState<K, S> = {

@@ -1,8 +1,8 @@
 import * as Core from '@ghostry/finity-core';
 import * as React from 'react';
-import type { Config } from './Types';
-import $useEffect from './useEffect';
-import $useRender from './useRender';
+import type { Config } from './Types.ts';
+import $useEffect from './useEffect.ts';
+import $useRender from './useRender.ts';
 
 export type * from '@ghostry/finity-core';
 
