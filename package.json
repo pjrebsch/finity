@@ -27,7 +27,7 @@
     "pkg/*"
   ],
   "devDependencies": {
-    "@rslib/core": "^0.10.2",
+    "@rslib/core": "^0.10.4",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3"
   },
