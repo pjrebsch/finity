@@ -2,6 +2,11 @@ import {
   defineTransitionalState,
   type DefinedTransitionalState,
 } from './defineTransitionalState.ts';
+import {
+  ExhaustiveSwitchInstance,
+  type ExhaustiveSwitch,
+} from './ExhaustiveSwitch.ts';
+import { InvalidTransitionError } from './InvalidTransitionError.ts';
 import type {
   TransitionalStateByKind as $TransitionalStateByKind,
   TransitionalStateUnion as $TransitionalStateUnion,
@@ -12,8 +17,12 @@ import $useState from './useState.ts';
 import $useStrictlyTransitionalState from './useStrictlyTransitionalState.ts';
 import $useTransitionalState from './useTransitionalState.ts';
 
-export * from './ExhaustiveSwitch.ts';
-export * from './Utils.ts';
+export { never, noop } from './Utils.ts';
+export {
+  ExhaustiveSwitchInstance,
+  InvalidTransitionError,
+  type ExhaustiveSwitch,
+};
 
 export type * from './defineTransitionalState.ts';
 export type * from './States.ts';

@@ -1,3 +1,4 @@
+import { InvalidTransitionError } from '@ghostry/finity-core';
 import { renderHook } from '@testing-library/react';
 import { describe, expect, it, test } from 'vitest';
 import { initialize } from '.';
@@ -75,12 +76,11 @@ describe('transitioning to an invalid state', () => {
 
   describe('with `onInvalidTransition` configured', () => {
     it('receives the current state and attempted transition state', () => {
-      let $from: unknown, $to: unknown;
+      let $error: InvalidTransitionError | undefined;
 
       const finity = initialize({
-        onInvalidTransition: ({ from, to }) => {
-          $from = from;
-          $to = to;
+        onInvalidTransition: (error) => {
+          $error = error;
         },
       });
 
@@ -88,7 +88,7 @@ describe('transitioning to an invalid state', () => {
         .defineTransitionalState<{
           A: {};
           B: {};
-        }>()
+        }>('ab')
         .transitions({
           A: ['B'],
           B: [],
@@ -103,8 +103,12 @@ describe('transitioning to an invalid state', () => {
         { kind: 'A' },
       );
 
-      expect($from).toMatchObject({ kind: 'B' });
-      expect($to).toMatchObject({ kind: 'A' });
+      expect($error).toBeInstanceOf(InvalidTransitionError);
+      expect($error?.state.name).toStrictEqual('ab');
+      expect($error?.state.from).toMatchObject({ kind: 'B' });
+      expect($error?.state.to).toMatchObject({ kind: 'A' });
+      expect($error?.message).toBeTypeOf('string');
+      expect($error?.stack).toBeTypeOf('string');
     });
   });
 });

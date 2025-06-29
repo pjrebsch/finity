@@ -171,14 +171,19 @@ While the types prevent transition functions from being called with invalid stat
 
 _An invalid transition will only be detected in this way if whatever the current state is does not allow transition to the next state (this will be improved with [#7](https://github.com/pjrebsch/finity/issues/7))._
 
-The configured function receives an object with the current state at the time of transition (`from`) and the state to which transition was attempted (`to`).
+The configured function receives an `InvalidTransitionError` with the following notable properties:
+
+- `state`:
+  - `name`: the name of the state if assigned
+  - `from`: the current state at the time of transition
+  - `to`: the state to which transition was attempted
+- `message`: a default error message with basic details
+- `stack`: a stack trace if the JS runtime supports it
 
 ```ts
 const finity = initialize({
-  onInvalidTransition: ({ from, to }) => {
-    console.warn(
-      `Invalid state transition from "${from.kind}" to "${to.kind}"`,
-    );
+  onInvalidTransition: ({ message, stack }) => {
+    console.warn(message, stack);
   },
 });
 ```
@@ -206,9 +211,9 @@ finity.useEffect(state.value).case(['A'], ({ transition }) => {
 
   /**
    * Valid transition from A -> C according to the types, but the state
-   * will have already transitioned to B which doesn't allow transition to
-   * C, so this an invalid transition at runtime which will invoke the
-   * `onInvalidTransition` configured function
+   * will have already transitioned to B which doesn't allow transition
+   * to C, so this is an invalid transition at runtime which will invoke
+   * the `onInvalidTransition` configured function
    */
   setTimeout(() => transition({ kind: 'C' }), 1000);
 });

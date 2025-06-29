@@ -1,11 +1,12 @@
 import type { DefinedTransitionalState } from './defineTransitionalState';
+import { InvalidTransitionError } from './InvalidTransitionError';
 import type {
   FiniteStateUnion,
   StateDefinition,
   TransitionalStateUnion,
   TransitionsDefinition,
 } from './States';
-import type { Config, Getter } from './Types';
+import { type Config, type Getter } from './Types';
 import type { UseState, UseStateHook } from './useState';
 
 export type UsingTransitionalState<
@@ -55,7 +56,13 @@ export default (config: Config, useState: UseStateHook) => {
           if (State.transitions[currentKind].includes(futureKind)) {
             state.set(to);
           } else {
-            config.onInvalidTransition?.({ from: state.value(), to });
+            config.onInvalidTransition?.(
+              new InvalidTransitionError({
+                name: State.name,
+                from: state.value(),
+                to,
+              }),
+            );
           }
         },
       } as unknown as ReturnType<Value>);
