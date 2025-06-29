@@ -1,12 +1,19 @@
-import type { Getter, UnhandledStates } from './Types';
+import type { Getter, IsUnique, UnhandledStates } from './Types';
 
 export type ExhaustiveSwitch<
   R,
   S extends { kind: string },
   C extends S['kind'],
 > = {
-  case: <G extends Exclude<S['kind'], C>[]>(
-    kinds: G extends never[] ? never : G,
+  /**
+   * @param kinds - The `kind` of states that will be handled in this case.
+   * If the list contains duplicates, a type error will be raised:
+   * ```txt
+   * Argument of type 'string[]' is not assignable to parameter of type 'never'.
+   * ```
+   */
+  case: <const G extends Exclude<S['kind'], C>[]>(
+    kinds: IsUnique<[...G]> extends true ? [...G] : never,
     fn: (state: S extends { kind: G[number] } ? S : never) => R,
   ) => ExhaustiveSwitch<R, S, C | G[number]>;
   use: Exclude<S['kind'], C> extends infer U

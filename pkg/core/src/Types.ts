@@ -24,3 +24,15 @@ export interface Config {
 export type Prettify<T> = {
   [K in keyof T]: T[K];
 } & {};
+
+/**
+ * @see https://stackoverflow.com/a/69386479/1454953
+ */
+export type IsUnique<T extends readonly unknown[]> = T extends readonly [
+  infer First,
+  ...infer Rest,
+]
+  ? First extends Rest[number]
+    ? false
+    : IsUnique<Rest>
+  : true;
