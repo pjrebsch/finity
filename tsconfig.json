@@ -8,7 +8,7 @@
 
     "moduleResolution": "bundler",
     "verbatimModuleSyntax": true,
-    "allowImportingTsExtensions": false,
+    "allowImportingTsExtensions": true,
     "noEmit": true,
     "incremental": false,
     "tsBuildInfoFile": null,

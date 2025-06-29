@@ -22,7 +22,7 @@ export class ExhaustiveSwitchInstance<R, S extends { kind: string }> {
     protected cases: [string[], (state: S) => R][],
   ) {}
 
-  public case = (kinds: string[], fn: (state: S) => R) => {
+  public case = (kinds: string[], fn: (state: S) => R): typeof this => {
     this.cases = [...this.cases, [kinds, fn]];
     return this;
   };

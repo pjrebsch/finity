@@ -8,7 +8,7 @@ import { For, Match, Switch, type JSX } from 'solid-js';
 export function Render<S extends { kind: string }>(props: {
   state: Getter<S>;
   cases: [string[], (state: S) => JSX.Element][];
-}) {
+}): JSX.Element {
   return (
     <Switch>
       <For each={props.cases}>

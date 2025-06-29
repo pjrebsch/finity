@@ -168,3 +168,31 @@ jobs:
           --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+  publish-jsr:
+    name: Publish `pkg/${{ matrix.pkg }}` to JSR
+    strategy:
+      fail-fast: false
+      matrix:
+        pkg:
+          - core
+          - solidjs
+          - reactjs
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Pre-publish
+        run: bun run prepack
+
+      - name: Publish `pkg/${{ matrix.pkg }}`
+        run: bunx jsr publish --allow-dirty
