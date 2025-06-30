@@ -18,8 +18,17 @@ export const initialize = (config: Config): Initialized => {
 
       const getter: Core.Getter<T> = () => value;
       const setter: Core.Setter<T> = <U extends T>(value: U) => {
-        set(value);
-        return value;
+        if (typeof value === 'function') {
+          let result = getter();
+          set((prev) => {
+            result = value(prev);
+            return result;
+          });
+          return result;
+        } else {
+          set(value);
+          return value;
+        }
       };
 
       return [getter, setter];

@@ -77,11 +77,21 @@ function Message(props: {
 
 ## Installation
 
-There are 3 official variants of this package available from https://npmjs.com
+There are 3 official variants of this package.
 
-For React and Solid applications, install [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs) or [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs) directly. These are intended to work out-of-the-box for those frameworks using their built-in reactivity features.
+### Officially Supported Frameworks
+
+For React apps, install [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs).
+
+For Solid apps, install [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs).
+
+These are intended to work out-of-the-box for those frameworks using their built-in reactivity features.
+
+### Other Frameworks
 
 For other frameworks, you can implement a custom integration using [`@ghostry/finity-core`](https://www.npmjs.com/package/@ghostry/finity-core).
+
+Or submit an issue to request support be added.
 
 ## Guide
 
@@ -167,16 +177,21 @@ Library initialization takes a configuration object with these optional properti
 
 ### `onInvalidTransition`
 
-While the types prevent transition functions from being called with invalid states, race conditions in the consuming application's code make it possible for transitions to be called for a state after that state has already transitioned. This represents a bug in the consuming application's code and this config makes it possible to report those occurrences.
+While the types prevent transition functions from being called with invalid states, the consuming application's code can still perform invalid transitions. This config makes it possible to report such occurrences.
 
-_An invalid transition will only be detected in this way if whatever the current state is does not allow transition to the next state (this will be improved with [#7](https://github.com/pjrebsch/finity/issues/7))._
+> [!NOTE]
+> Performing an invalid transition will _not_ throw an error—it will simply call this configured function.
 
 The configured function receives an `InvalidTransitionError` with the following notable properties:
 
+- `reason`: indicates the type of invalid transition (`"stale"` or `"disallowed"`)
 - `state`:
   - `name`: the name of the state if assigned
-  - `from`: the current state at the time of transition
+  - `from`: the state at the time of attempted transition
   - `to`: the state to which transition was attempted
+- `tick`:
+  - `current`: the state's monotonic counter value when the transition was attempted
+  - `bound`: the monotonic counter value that was required for the transition to be valid
 - `message`: a default error message with basic details
 - `stack`: a stack trace if the JS runtime supports it
 
@@ -188,7 +203,9 @@ const finity = initialize({
 });
 ```
 
-Here's a demonstration of how an invalid transition could be triggered:
+#### Examples of invalid transitions
+
+Given the following allowed transitions:
 
 ```ts
 finity
@@ -197,10 +214,25 @@ finity
   }>()
   .transitions({
     A: ['B', 'C'],
-    B: [],
+    B: ['C'],
     C: [],
+    D: [],
   });
 ```
+
+Overriding the types can lead to an invalid state transition:
+
+```ts
+finity.useEffect(state.value).case(['A'], ({ transition }) => {
+  /**
+   * This is simply a disallowed transition which will trigger the
+   * configured `onInvalidTransition` function at runtime
+   */
+  transition({ kind: 'D' } as any);
+});
+```
+
+Transitioning after the first transition:
 
 ```ts
 finity.useEffect(state.value).case(['A'], ({ transition }) => {
@@ -210,14 +242,26 @@ finity.useEffect(state.value).case(['A'], ({ transition }) => {
   transition({ kind: 'B' });
 
   /**
-   * Valid transition from A -> C according to the types, but the state
-   * will have already transitioned to B which doesn't allow transition
-   * to C, so this is an invalid transition at runtime which will invoke
-   * the `onInvalidTransition` configured function
+   * According to the types, this is a valid transition from A -> C, but
+   * the state will have already transitioned to B, so this transition
+   * will not occur and will trigger `onInvalidTransition`
    */
-  setTimeout(() => transition({ kind: 'C' }), 1000);
+  transition({ kind: 'C' });
 });
 ```
+
+Similarly, the application may have a race condition. The winner of
+the race will determine the transition, the loser(s) will each trigger
+the `onInvalidTransition` function:
+
+```ts
+finity.useEffect(state.value).case(['A'], ({ transition }) => {
+  setTimeout(() => transition({ kind: 'B' }), Math.random() * 100);
+  setTimeout(() => transition({ kind: 'C' }), Math.random() * 100);
+});
+```
+
+_If a stale transition is made to a disallowed state, the `reason` will be `"stale"`, not `"disallowed"`._
 
 ## FAQ
 
