@@ -203,4 +203,4 @@ jobs:
 
       - name: Publish `pkg/${{ matrix.pkg }}`
         working-directory: pkg/${{ matrix.pkg }}
-        run: bunx --no-install jsr publish --provenance --allow-dirty
+        run: bunx --no-install jsr publish --allow-dirty
