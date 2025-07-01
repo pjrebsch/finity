@@ -58,11 +58,13 @@ test('transitioning the state', async () => {
   ]);
 });
 
-describe('transitioning to an invalid state', () => {
+describe('transitioning to a disallowed state', () => {
   it('does not transition', async () => {
-    const { result: state } = renderHook(finity.useStrictlyTransitionalState, {
+    const { result: state } = renderHook(finity.useTransitionalState, {
       initialProps: [State, () => ({ kind: 'Ready', resource: 1 } as const)],
     });
+
+    const [current, trigger] = createSignal(0);
 
     await testEffectInStages((done) => [
       () => {
@@ -75,6 +77,9 @@ describe('transitioning to an invalid state', () => {
           { kind: 'Errored', error: new Error('e') },
         );
 
+        trigger(current() + 1);
+      },
+      () => {
         const { transition, ...s } = state.value();
         expect(s).toEqual({ kind: 'Ready', resource: 1 });
         done();
@@ -83,7 +88,7 @@ describe('transitioning to an invalid state', () => {
   });
 
   describe('with `onInvalidTransition` configured', () => {
-    it('receives the current state and attempted transition state', async () => {
+    it('receives the transition context', async () => {
       let $error: InvalidTransitionError | undefined;
 
       const finity = initialize({
@@ -102,12 +107,9 @@ describe('transitioning to an invalid state', () => {
           B: [],
         });
 
-      const { result: state } = renderHook(
-        finity.useStrictlyTransitionalState,
-        {
-          initialProps: [State, () => ({ kind: 'B' } as const)],
-        },
-      );
+      const { result: state } = renderHook(finity.useTransitionalState, {
+        initialProps: [State, () => ({ kind: 'B' } as const)],
+      });
 
       const [current, trigger] = createSignal(0);
 
@@ -128,11 +130,104 @@ describe('transitioning to an invalid state', () => {
         },
         () => {
           expect($error).toBeInstanceOf(InvalidTransitionError);
+          expect($error?.reason).toBe('disallowed');
           expect($error?.state.name).toStrictEqual('ab');
           expect($error?.state.from).toMatchObject({ kind: 'B' });
           expect($error?.state.to).toMatchObject({ kind: 'A' });
+          expect($error?.tick.current).toBe(0);
+          expect($error?.tick.bound).toBe(0);
           expect($error?.message).toBeTypeOf('string');
           expect($error?.stack).toBeTypeOf('string');
+
+          done();
+        },
+      ]);
+    });
+  });
+});
+
+describe('transitioning after state already updated', () => {
+  const State = finity
+    .defineTransitionalState<{
+      A: {};
+      B: {};
+      C: {};
+    }>('abc')
+    .transitions({
+      A: ['B', 'C'],
+      B: ['C'],
+      C: [],
+    });
+
+  describe('using `set`', () => {
+    it('does not transition', async () => {
+      const { result: state } = renderHook(finity.useTransitionalState, {
+        initialProps: [State, () => ({ kind: 'A' } as const)],
+      });
+
+      await testEffectInStages((done) => [
+        () => {
+          const s1 = state.value();
+          expect(s1.kind).toEqual('A');
+          if (s1.kind !== 'A') return;
+
+          state.set({ kind: 'B' });
+
+          s1.transition({ kind: 'C' });
+        },
+        () => {
+          const { transition, ...s } = state.value();
+          expect(s).toEqual({ kind: 'B' });
+          done();
+        },
+      ]);
+    });
+  });
+
+  describe('using `update`', () => {
+    it('does not transition', async () => {
+      const { result: state } = renderHook(finity.useTransitionalState, {
+        initialProps: [State, () => ({ kind: 'A' } as const)],
+      });
+
+      await testEffectInStages((done) => [
+        () => {
+          const s1 = state.value();
+          expect(s1.kind).toEqual('A');
+          if (s1.kind !== 'A') return;
+
+          state.update(() => ({ kind: 'B' }));
+
+          s1.transition({ kind: 'C' });
+        },
+        () => {
+          const { transition, ...s } = state.value();
+          expect(s).toEqual({ kind: 'B' });
+          done();
+        },
+      ]);
+    });
+  });
+
+  describe('using the same transition function', () => {
+    it('does not transition', async () => {
+      const { result: state } = renderHook(finity.useTransitionalState, {
+        initialProps: [State, () => ({ kind: 'A' } as const)],
+      });
+
+      await testEffectInStages((done) => [
+        () => {
+          const s1 = state.value();
+          expect(s1.kind).toEqual('A');
+          if (s1.kind !== 'A') return;
+
+          s1.transition({ kind: 'B' });
+
+          s1.transition({ kind: 'C' });
+        },
+        () => {
+          const { transition, ...s } = state.value();
+          expect(s).toEqual({ kind: 'B' });
           done();
         },
       ]);

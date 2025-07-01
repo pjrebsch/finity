@@ -50,7 +50,7 @@ test('transitioning the state', async () => {
   expect(s2).toEqual({ kind: 'Ready', resource: 123 });
 });
 
-describe('transitioning to an invalid state', () => {
+describe('transitioning to a disallowed state', () => {
   it('does not transition', () => {
     const { result, rerender } = renderHook(() =>
       finity.useTransitionalState(State, () => ({
@@ -75,7 +75,7 @@ describe('transitioning to an invalid state', () => {
   });
 
   describe('with `onInvalidTransition` configured', () => {
-    it('receives the current state and attempted transition state', () => {
+    it('receives the transition context', () => {
       let $error: InvalidTransitionError | undefined;
 
       const finity = initialize({
@@ -104,11 +104,97 @@ describe('transitioning to an invalid state', () => {
       );
 
       expect($error).toBeInstanceOf(InvalidTransitionError);
+      expect($error?.reason).toBe('disallowed');
       expect($error?.state.name).toStrictEqual('ab');
       expect($error?.state.from).toMatchObject({ kind: 'B' });
       expect($error?.state.to).toMatchObject({ kind: 'A' });
+      expect($error?.tick.current).toBe(0);
+      expect($error?.tick.bound).toBe(0);
       expect($error?.message).toBeTypeOf('string');
       expect($error?.stack).toBeTypeOf('string');
+    });
+  });
+});
+
+describe('transitioning after state already updated', () => {
+  const State = finity
+    .defineTransitionalState<{
+      A: {};
+      B: {};
+      C: {};
+    }>('abc')
+    .transitions({
+      A: ['B', 'C'],
+      B: ['C'],
+      C: [],
+    });
+
+  describe('using `set`', () => {
+    it('does not transition', async () => {
+      const { result, rerender } = renderHook(() =>
+        finity.useTransitionalState(State, () => ({ kind: 'A' })),
+      );
+
+      const s1 = result.current.value();
+      expect(s1.kind).toEqual('A');
+      if (s1.kind !== 'A') return;
+
+      result.current.set({ kind: 'B' });
+
+      rerender();
+
+      s1.transition({ kind: 'C' });
+
+      rerender();
+
+      const { transition, ...s } = result.current.value();
+      expect(s).toEqual({ kind: 'B' });
+    });
+  });
+
+  describe('using `update`', () => {
+    it('does not transition', async () => {
+      const { result, rerender } = renderHook(() =>
+        finity.useTransitionalState(State, () => ({ kind: 'A' })),
+      );
+
+      const s1 = result.current.value();
+      expect(s1.kind).toEqual('A');
+      if (s1.kind !== 'A') return;
+
+      result.current.update(() => ({ kind: 'B' }));
+
+      rerender();
+
+      s1.transition({ kind: 'C' });
+
+      rerender();
+
+      const { transition, ...s } = result.current.value();
+      expect(s).toEqual({ kind: 'B' });
+    });
+  });
+
+  describe('using the same transition function', () => {
+    it('does not transition', async () => {
+      const { result, rerender } = renderHook(() =>
+        finity.useTransitionalState(State, () => ({ kind: 'A' })),
+      );
+
+      const s1 = result.current.value();
+      expect(s1.kind).toEqual('A');
+      if (s1.kind !== 'A') return;
+
+      s1.transition({ kind: 'B' });
+
+      rerender();
+
+      s1.transition({ kind: 'C' });
+
+      rerender();
+
+      const { transition, ...s } = result.current.value();
+      expect(s).toEqual({ kind: 'B' });
     });
   });
 });

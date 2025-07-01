@@ -1,5 +1,9 @@
 import type { DefinedTransitionalState } from './defineTransitionalState';
-import { InvalidTransitionError } from './InvalidTransitionError';
+import {
+  InvalidTransitionError,
+  type FundamentalState,
+  type Reason,
+} from './InvalidTransitionError';
 import type {
   FiniteStateUnion,
   StateDefinition,
@@ -7,6 +11,7 @@ import type {
   TransitionsDefinition,
 } from './States';
 import { type Config, type Getter } from './Types';
+import useClock from './useClock';
 import type { UseState, UseStateHook } from './useState';
 
 export type UsingTransitionalState<
@@ -41,35 +46,75 @@ export default (config: Config, useState: UseStateHook) => {
     State: DefinedTransitionalState<K, S, X>,
     initial: NoInfer<Getter<FiniteStateUnion<K, S>>>,
   ): UseTransitionalState<K, S, X> => {
-    type State = FiniteStateUnion<K, S>;
+    type $State = FiniteStateUnion<K, S>;
+    type $Use = UseTransitionalState<K, S, X>;
 
-    const state = useState<State>(initial);
+    type $Set = $Use['set'];
+    type $Update = $Use['update'];
+    type $Value = $Use['value'];
 
-    type Value = UseTransitionalState<K, S, X>['value'];
-    const value: Value = () =>
-      ({
+    const state = useState<$State>(initial);
+    const clock = useClock(useState);
+
+    const set: $Set = (...args: Parameters<$Set>): ReturnType<$Set> => {
+      clock.advance();
+      return state.set(...args);
+    };
+
+    const update: $Update = (
+      ...args: Parameters<$Update>
+    ): ReturnType<$Update> => {
+      clock.advance();
+      return state.update(...args);
+    };
+
+    const value: $Value = () => {
+      /**
+       * When the transition function is created, it should be bound
+       * to a particular tick of the clock, so that the transition
+       * function has no effect if the state has since been updated.
+       */
+      const boundTick = clock.current();
+
+      const invalidTransition = (
+        reason: Reason,
+        to: FundamentalState,
+      ): void => {
+        config.onInvalidTransition?.(
+          new InvalidTransitionError({
+            reason,
+            state: {
+              name: State.name,
+              from: state.value(),
+              to,
+            },
+            tick: {
+              current: clock.current(),
+              bound: boundTick,
+            },
+          }),
+        );
+      };
+
+      return {
         ...state.value(),
-        transition: (to: Exclude<State, Function>): void => {
+        transition: (to: Exclude<$State, Function>): void => {
+          if (clock.current() !== boundTick) {
+            return invalidTransition('stale', to);
+          }
+
           const currentKind = state.value().kind;
           const futureKind = to.kind;
 
-          if (State.transitions[currentKind].includes(futureKind)) {
-            state.set(to);
-          } else {
-            config.onInvalidTransition?.(
-              new InvalidTransitionError({
-                name: State.name,
-                from: state.value(),
-                to,
-              }),
-            );
+          if (!State.transitions[currentKind].includes(futureKind)) {
+            return invalidTransition('disallowed', to);
           }
-        },
-      } as unknown as ReturnType<Value>);
 
-    return {
-      ...state,
-      value,
+          set(to);
+        },
+      } as unknown as ReturnType<$Value>;
     };
+
+    return { set, update, value };
   };
 };

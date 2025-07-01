@@ -39,7 +39,7 @@ test('transitioning the state', async () => {
   ]);
 });
 
-describe('transitioning to an invalid state', () => {
+describe('transitioning to a disallowed state', () => {
   it('does not transition', async () => {
     const { result: state } = renderHook(finity.useStrictlyTransitionalState, {
       initialProps: [State, () => ({ kind: 'Ready', resource: 1 } as const)],
@@ -64,7 +64,7 @@ describe('transitioning to an invalid state', () => {
   });
 
   describe('with `onInvalidTransition` configured', () => {
-    it('receives the current state and attempted transition state', async () => {
+    it('receives the transition context', async () => {
       let $error: InvalidTransitionError | undefined;
 
       const finity = initialize({
@@ -109,11 +109,57 @@ describe('transitioning to an invalid state', () => {
         },
         () => {
           expect($error).toBeInstanceOf(InvalidTransitionError);
+          expect($error?.reason).toBe('disallowed');
           expect($error?.state.name).toStrictEqual('ab');
           expect($error?.state.from).toMatchObject({ kind: 'B' });
           expect($error?.state.to).toMatchObject({ kind: 'A' });
+          expect($error?.tick.current).toBe(0);
+          expect($error?.tick.bound).toBe(0);
           expect($error?.message).toBeTypeOf('string');
           expect($error?.stack).toBeTypeOf('string');
+
+          done();
+        },
+      ]);
+    });
+  });
+});
+
+describe('transitioning after state already updated', () => {
+  const State = finity
+    .defineTransitionalState<{
+      A: {};
+      B: {};
+      C: {};
+    }>('abc')
+    .transitions({
+      A: ['B', 'C'],
+      B: ['C'],
+      C: [],
+    });
+
+  describe('using the same transition function', () => {
+    it('does not transition', async () => {
+      const { result: state } = renderHook(
+        finity.useStrictlyTransitionalState,
+        {
+          initialProps: [State, () => ({ kind: 'A' } as const)],
+        },
+      );
+
+      await testEffectInStages((done) => [
+        () => {
+          const s1 = state.value();
+          expect(s1.kind).toEqual('A');
+          if (s1.kind !== 'A') return;
+
+          s1.transition({ kind: 'B' });
+
+          s1.transition({ kind: 'C' });
+        },
+        () => {
+          const { transition, ...s } = state.value();
+          expect(s).toEqual({ kind: 'B' });
           done();
         },
       ]);
