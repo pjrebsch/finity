@@ -16,28 +16,6 @@ export default defineConfig({
         },
       },
     },
-    {
-      format: 'cjs',
-      syntax: 'es6',
-      bundle: false,
-      autoExtension: false,
-      output: {
-        distPath: {
-          root: './dist/cjs',
-        },
-      },
-    },
-    {
-      format: 'umd',
-      syntax: 'es6',
-      bundle: true,
-      autoExtension: false,
-      output: {
-        distPath: {
-          root: './dist/umd',
-        },
-      },
-    },
   ],
   source: {
     tsconfigPath: './tsconfig.json',
@@ -57,6 +35,6 @@ export default defineConfig({
       root: './dist',
     },
     cleanDistPath: true,
-    sourceMap: true,
+    sourceMap: false,
   },
 });
