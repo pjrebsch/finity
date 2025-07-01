@@ -146,6 +146,9 @@ jobs:
         with:
           bun-version-file: .bun-version
 
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
       - name: Download `pkg/${{ matrix.pkg }}`
         uses: actions/download-artifact@v4
         with:
@@ -162,7 +165,7 @@ jobs:
         with: { node-version: 20, registry-url: https://registry.npmjs.org }
       - name: Publish `pkg/${{ matrix.pkg }}`
         run: >
-          bunx npm@11.2.0 publish
+          bunx --no-install npm publish
           ${{ github.workspace }}/dist/${{ env.filename }}
           --tag ${{ env.is-prerelease == 'true' && 'experimental' || 'latest' }}
           --provenance
@@ -191,8 +194,13 @@ jobs:
         with:
           bun-version-file: .bun-version
 
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
       - name: Pre-publish
+        working-directory: pkg/${{ matrix.pkg }}
         run: bun run prepack
 
       - name: Publish `pkg/${{ matrix.pkg }}`
-        run: bunx jsr publish --allow-dirty
+        working-directory: pkg/${{ matrix.pkg }}
+        run: bunx --no-install jsr publish --provenance --allow-dirty

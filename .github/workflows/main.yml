@@ -37,9 +37,12 @@ jobs:
         with:
           bun-version-file: .bun-version
 
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
       - name: Read package version
         id: read-version
-        run: echo "version=v$(bunx npm@11.2.0 view ./ version)" >> $GITHUB_OUTPUT
+        run: echo "version=v$(bunx --no-install npm view ./ version)" >> $GITHUB_OUTPUT
 
   check-release:
     name: Check for existing release

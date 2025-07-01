@@ -28,6 +28,8 @@
   ],
   "devDependencies": {
     "@rslib/core": "^0.10.4",
+    "jsr": "^0.13.4",
+    "npm": "^11.4.2",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3"
   },
@@ -37,5 +39,5 @@
     "outdated": "bun outdated && turbo run outdated",
     "test": "turbo run test"
   },
-  "packageManager": "bun@1.2.8"
+  "packageManager": "bun@1.2.17"
 }
