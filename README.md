@@ -2,6 +2,17 @@
 
 Finite state management with exhaustiveness and transition enforcement for TypeScript.
 
+![jsr.io score](https://jsr.io/badges/@ghostry/finity-core/score)
+![tree shaking](https://flat.badgen.net/bundlephobia/tree-shaking/@ghostry/finity-core)
+![dependency count](https://flat.badgen.net/bundlephobia/dependency-count/@ghostry/finity-core?color=black)
+
+| Framework | Package                                                                            |                                                                                        |
+| --------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| ReactJS   | [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs) | ![minzipped size](https://flat.badgen.net/bundlephobia/minzip/@ghostry/finity-reactjs) |
+| SolidJS   | [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs) | ![minzipped size](https://flat.badgen.net/bundlephobia/minzip/@ghostry/finity-solidjs) |
+
+_For other frameworks, you can implement a custom integration with [`@ghostry/finity-core`](https://www.npmjs.com/package/@ghostry/finity-core), or submit an issue to request support be added._
+
 ## Example
 
 An example of the high-level states modeling user sign-in:
@@ -74,24 +85,6 @@ function Message(props: {
     .use();
 }
 ```
-
-## Installation
-
-There are 3 official variants of this package.
-
-### Officially Supported Frameworks
-
-For React apps, install [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs).
-
-For Solid apps, install [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs).
-
-These are intended to work out-of-the-box for those frameworks using their built-in reactivity features.
-
-### Other Frameworks
-
-For other frameworks, you can implement a custom integration using [`@ghostry/finity-core`](https://www.npmjs.com/package/@ghostry/finity-core).
-
-Or submit an issue to request support be added.
 
 ## Guide
 
