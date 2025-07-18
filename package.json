@@ -27,10 +27,10 @@
     "pkg/*"
   ],
   "devDependencies": {
-    "@rslib/core": "^0.10.4",
-    "jsr": "^0.13.4",
+    "@rslib/core": "^0.10.6",
+    "jsr": "^0.13.5",
     "npm": "^11.4.2",
-    "turbo": "^2.5.4",
+    "turbo": "^2.5.5",
     "typescript": "^5.8.3"
   },
   "scripts": {
