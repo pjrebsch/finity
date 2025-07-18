@@ -16,6 +16,14 @@ export type UsingTransitionalState<
   ? UseTransitionalState<K, S, X>
   : never;
 
+export interface UseTransitionalState<
+  K extends string,
+  S extends StateDefinition<K>,
+  X extends TransitionsDefinition<K>,
+> extends UseState<FiniteStateUnion<K, S>> {
+  value(): TransitionalStateUnion<K, S, X>;
+}
+
 export type UseTransitionalStateHook = <
   K extends string,
   S extends StateDefinition<K>,
@@ -25,15 +33,10 @@ export type UseTransitionalStateHook = <
   initial: NoInfer<Getter<FiniteStateUnion<K, S>>>,
 ) => UseTransitionalState<K, S, X>;
 
-export interface UseTransitionalState<
-  K extends string,
-  S extends StateDefinition<K>,
-  X extends TransitionsDefinition<K>,
-> extends UseState<FiniteStateUnion<K, S>> {
-  value(): TransitionalStateUnion<K, S, X>;
-}
-
-export default (config: Config, useState: UseStateHook) => {
+export default (
+  config: Config,
+  useState: UseStateHook,
+): UseTransitionalStateHook => {
   return <
     K extends string,
     S extends StateDefinition<K>,

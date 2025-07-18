@@ -10,7 +10,7 @@ export type UseStateHook = <T extends {}>(
   initial: InitialValue<T>,
 ) => UseState<T>;
 
-export default (config: Config) => {
+export default (config: Config): UseStateHook => {
   return <T extends {}>(initial: InitialValue<T>): UseState<T> => {
     const initialValue = (): Exclude<T, Function> =>
       initial instanceof Function
