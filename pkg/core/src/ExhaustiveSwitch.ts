@@ -1,8 +1,18 @@
-import type { Getter, IsUnique, UnhandledStates } from './Types';
+import type {
+  FundamentalState,
+  Getter,
+  IsUnique,
+  UnhandledStates,
+} from './Types';
 
+/**
+ * The implementation type for exhaustive state switching.
+ *
+ * @protected
+ */
 export type ExhaustiveSwitch<
   R,
-  S extends { kind: string },
+  S extends FundamentalState,
   C extends S['kind'],
 > = {
   /**
@@ -11,6 +21,9 @@ export type ExhaustiveSwitch<
    * ```txt
    * Argument of type 'string[]' is not assignable to parameter of type 'never'.
    * ```
+   *
+   * @param fn - The function to evaluate when the state matches the
+   * given `kinds`.
    */
   case: <const G extends Exclude<S['kind'], C>[]>(
     kinds: IsUnique<[...G]> extends true ? [...G] : never,
@@ -23,7 +36,12 @@ export type ExhaustiveSwitch<
     : never;
 };
 
-export class ExhaustiveSwitchInstance<R, S extends { kind: string }> {
+/**
+ * The implementation class for exhaustive state switching.
+ *
+ * @protected
+ */
+export class ExhaustiveSwitchInstance<R, S extends FundamentalState> {
   constructor(
     protected readonly state: Getter<S>,
     protected cases: [string[], (state: S) => R][],

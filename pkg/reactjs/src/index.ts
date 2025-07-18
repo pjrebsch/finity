@@ -4,12 +4,20 @@ import type { Config } from './Types.ts';
 import $useEffect from './useEffect.ts';
 import $useRender from './useRender.ts';
 
-export type * from '@ghostry/finity-core';
-
+/**
+ * Initialization of the library returns these set of functions.
+ */
 export interface Initialized extends Core.Initialized {
+  /**
+   * A component hook to render JSX based on the current state.
+   */
   useRender: ReturnType<typeof $useRender>;
 }
 
+/**
+ * Initializes an instance of the usable library API for ReactJS according
+ * to the provided configuration.
+ */
 export const initialize = (config: Config): Initialized => {
   const api = Core.initialize({
     onInvalidTransition: config.onInvalidTransition,

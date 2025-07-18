@@ -26,7 +26,7 @@ test('transitioning the state', async () => {
   renderHook(() =>
     finity
       .useEffect(result.current.value)
-      .case(['Loading'], (s) => {
+      .case(['Loading'], async (s) => {
         s.transition({ kind: 'Ready', resource: 123 });
       })
       .case(['Ready', 'Errored'], (s) => {

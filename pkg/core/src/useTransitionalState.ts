@@ -1,16 +1,12 @@
 import type { DefinedTransitionalState } from './defineTransitionalState';
-import {
-  InvalidTransitionError,
-  type FundamentalState,
-  type Reason,
-} from './InvalidTransitionError';
+import { InvalidTransitionError, type Reason } from './InvalidTransitionError';
 import type {
   FiniteStateUnion,
   StateDefinition,
   TransitionalStateUnion,
   TransitionsDefinition,
 } from './States';
-import { type Config, type Getter } from './Types';
+import { type Config, type FundamentalState, type Getter } from './Types';
 import useClock from './useClock';
 import type { UseState, UseStateHook } from './useState';
 
