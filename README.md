@@ -2,14 +2,14 @@
 
 Finite state management with exhaustiveness and transition enforcement for TypeScript.
 
-![jsr.io score](https://jsr.io/badges/@ghostry/finity-core/score)
-![tree shaking](https://flat.badgen.net/bundlephobia/tree-shaking/@ghostry/finity-core)
-![dependency count](https://flat.badgen.net/bundlephobia/dependency-count/@ghostry/finity-core?color=black)
+[![jsr.io score](https://jsr.io/badges/@ghostry/finity-core/score)](https://jsr.io/@ghostry/finity-core/score)
+[![tree shaking](https://flat.badgen.net/bundlephobia/tree-shaking/@ghostry/finity-core)](https://bundlephobia.com/package/@ghostry/finity-core)
+[![dependency count](https://flat.badgen.net/bundlephobia/dependency-count/@ghostry/finity-core?color=blue)](https://bundlephobia.com/package/@ghostry/finity-core)
 
-| Framework | Package                                                                            |                                                                                        |
-| --------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| ReactJS   | [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs) | ![minzipped size](https://flat.badgen.net/bundlephobia/minzip/@ghostry/finity-reactjs) |
-| SolidJS   | [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs) | ![minzipped size](https://flat.badgen.net/bundlephobia/minzip/@ghostry/finity-solidjs) |
+| Framework | Package                                                                            |                                                                                                                                                 |
+| --------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| ReactJS   | [`@ghostry/finity-reactjs`](https://www.npmjs.com/package/@ghostry/finity-reactjs) | [![minzipped size](https://flat.badgen.net/bundlephobia/minzip/@ghostry/finity-reactjs)](https://bundlephobia.com/package/@ghostry/finity-core) |
+| SolidJS   | [`@ghostry/finity-solidjs`](https://www.npmjs.com/package/@ghostry/finity-solidjs) | [![minzipped size](https://flat.badgen.net/bundlephobia/minzip/@ghostry/finity-solidjs)](https://bundlephobia.com/package/@ghostry/finity-core) |
 
 _For other frameworks, you can implement a custom integration with [`@ghostry/finity-core`](https://www.npmjs.com/package/@ghostry/finity-core), or submit an issue to request support be added._
 
