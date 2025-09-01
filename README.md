@@ -3,7 +3,7 @@
 Finite state management with exhaustiveness and transition enforcement for TypeScript.
 
 [![jsr.io score](https://jsr.io/badges/@ghostry/finity-core/score)](https://jsr.io/@ghostry/finity-core/score)
-[![tree shaking](https://flat.badgen.net/bundlephobia/tree-shaking/@ghostry/finity-core)](https://bundlephobia.com/package/@ghostry/finity-core)
+[![tree shaking](https://flat.badgen.net/bundlephobia/tree-shaking/@ghostry/finity-core?color=blue)](https://bundlephobia.com/package/@ghostry/finity-core)
 [![dependency count](https://flat.badgen.net/bundlephobia/dependency-count/@ghostry/finity-core?color=blue)](https://bundlephobia.com/package/@ghostry/finity-core)
 
 | Framework | Package                                                                            |                                                                                                                                                 |

@@ -4,6 +4,17 @@ import type { Config } from './Types.ts';
 import $useEffect from './useEffect.ts';
 import $useRender from './useRender.ts';
 
+export type {
+  Config,
+  ExhaustiveSwitch,
+  ExhaustiveSwitchInstance,
+  Getter,
+  InvalidTransitionError,
+  Setter,
+  TransitionalState,
+  TransitionalStates,
+} from '@ghostry/finity-core';
+
 /**
  * Initialization of the library returns these set of functions.
  */
