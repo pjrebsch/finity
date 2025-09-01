@@ -24,12 +24,10 @@
   "bugs": "https://github.com/pjrebsch/finity/issues",
   "type": "module",
   "types": "./dist/types/index.d.ts",
-  "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "require": "./dist/cjs/index.js",
       "import": "./dist/esm/index.js",
       "default": "./dist/esm/index.js"
     }
