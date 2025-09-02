@@ -1,6 +1,6 @@
 {
   "name": "@ghostry/finity-reactjs",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "license": "MIT",
   "description": "Finite state management with exhaustiveness and transition enforcement for TypeScript.",
   "keywords": [
