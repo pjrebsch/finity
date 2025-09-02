@@ -23,6 +23,10 @@ export {
   type ExhaustiveSwitch,
 } from './ExhaustiveSwitch.ts';
 
+export type { UsingTransitionalState } from './useTransitionalState.ts';
+
+export type { UsingStrictlyTransitionalState } from './useStrictlyTransitionalState.ts';
+
 /**
  * A type union of the defined transitional states.
  */

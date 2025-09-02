@@ -10,6 +10,9 @@ import { type Config, type FundamentalState, type Getter } from './Types';
 import useClock from './useClock';
 import type { UseState, UseStateHook } from './useState';
 
+/**
+ * Returns the transitional state type from a defined transitional state.
+ */
 export type UsingTransitionalState<
   T extends DefinedTransitionalState<any, any, any>,
 > = T extends DefinedTransitionalState<infer K, infer S, infer X>

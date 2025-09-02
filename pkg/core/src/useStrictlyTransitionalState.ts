@@ -10,6 +10,10 @@ import {
   type UseTransitionalState,
 } from './useTransitionalState';
 
+/**
+ * Returns the strictly-transitional state type from a defined
+ * transitional state.
+ */
 export type UsingStrictlyTransitionalState<
   T extends DefinedTransitionalState<any, any, any>,
 > = T extends DefinedTransitionalState<infer K, infer S, infer X>

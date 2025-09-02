@@ -13,6 +13,8 @@ export type {
   Setter,
   TransitionalState,
   TransitionalStates,
+  UsingStrictlyTransitionalState,
+  UsingTransitionalState,
 } from '@ghostry/finity-core';
 
 /**
